@@ -7,7 +7,7 @@ import TasksCard from '../components/TasksCard';
 import MeetingsList from '../components/MeetingsList';
 import { useLocation } from 'react-router-dom';
 
-const API_BASE_URL = 'http://localhost:8081/api';
+const API_BASE_URL = "https://deepwork-ai-backend.onrender.com/api";
 
 function Dashboard() {
   const [file, setFile] = useState(null);
