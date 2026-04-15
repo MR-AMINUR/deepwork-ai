@@ -1,14 +1,18 @@
-# Use Java 21 runtime
+# -------- BUILD STAGE --------
+FROM maven:3.9.9-eclipse-temurin-21 AS builder
+
+WORKDIR /app
+COPY . .
+
+RUN mvn clean package -DskipTests
+
+# -------- RUN STAGE --------
 FROM eclipse-temurin:21-jdk
 
-# Set working directory
 WORKDIR /app
 
-# Copy jar file
-COPY target/deepwork-ai-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=builder /app/target/*.jar app.jar
 
-# Expose port
 EXPOSE 8081
 
-# Run app
 ENTRYPOINT ["java", "-jar", "app.jar"]
