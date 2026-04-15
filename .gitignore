@@ -1,0 +1,6 @@
+ai-service/temp/
+*.wav
+*.mp4
+node_modules/
+dist/
+*.log

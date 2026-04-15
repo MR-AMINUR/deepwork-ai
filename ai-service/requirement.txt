@@ -1,0 +1,6 @@
+FastAPI
+unicorn
+python-multipart
+openai-whisper
+transformers
+torch
