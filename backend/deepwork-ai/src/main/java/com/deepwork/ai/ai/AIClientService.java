@@ -1,16 +1,18 @@
 package com.deepwork.ai.ai;
 
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.*;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.InputStream;
 
 @Service
 public class AIClientService {
@@ -19,40 +21,32 @@ public class AIClientService {
     private String AI_URL;
 
     public AIResponse processAudio(MultipartFile file) {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
 
-        try {
-            // Step 1: Set timeouts for large audio files
-            SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-            factory.setConnectTimeout(60000);       // 60 seconds to connect
-            factory.setReadTimeout(600000);          // 10 minutes to read response
+            HttpPost httpPost = new HttpPost(AI_URL);
 
-            RestTemplate restTemplate = new RestTemplate(factory);
+            // ngrok bypass header
+            httpPost.setHeader("ngrok-skip-browser-warning", "true");
 
-            // Step 2: Set headers including ngrok bypass
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-            headers.set("ngrok-skip-browser-warning", "true");  // Fix ngrok interception
+            // Build multipart body — streams the file, no Content-Length needed
+            org.apache.hc.core5.http.HttpEntity entity = MultipartEntityBuilder.create()
+                    .addBinaryBody(
+                            "file",
+                            file.getInputStream(),
+                            ContentType.create(file.getContentType()),
+                            file.getOriginalFilename()
+                    )
+                    .build();
 
-            // Step 3: Build multipart body
-            ByteArrayResource resource = new ByteArrayResource(file.getBytes()) {
-                @Override
-                public String getFilename() {
-                    return file.getOriginalFilename();
-                }
-            };
+            httpPost.setEntity(entity);
 
-            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-            body.add("file", resource);
+            // Execute and parse response
+            return httpClient.execute(httpPost, (ClassicHttpResponse response) -> {
+                InputStream responseBody = response.getEntity().getContent();
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(responseBody, AIResponse.class);
+            });
 
-            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-            // Step 4: Call AI service
-            ResponseEntity<AIResponse> response = restTemplate.postForEntity(AI_URL, requestEntity, AIResponse.class);
-
-            return response.getBody();
-
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading audio file", e);
         } catch (Exception e) {
             throw new RuntimeException("Error calling AI service: " + e.getMessage(), e);
         }
