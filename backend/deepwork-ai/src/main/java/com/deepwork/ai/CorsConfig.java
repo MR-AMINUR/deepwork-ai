@@ -1,4 +1,4 @@
-package com.deepwork.ai.ai;
+package com.deepwork.ai;
 
 import org.jspecify.annotations.NonNull;
 import org.springframework.context.annotation.Bean;
