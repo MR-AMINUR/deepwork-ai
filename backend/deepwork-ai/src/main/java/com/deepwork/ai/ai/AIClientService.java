@@ -33,7 +33,7 @@ public class AIClientService {
 
             HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-            String AI_URL = "http://127.0.0.1:8000/analyze";
+            String AI_URL = "https://cryptic-tradition-glaring.ngrok-free.dev/analyze";
             ResponseEntity<AIResponse> response = restTemplate.postForEntity(AI_URL, requestEntity, AIResponse.class);
 
             return response.getBody();
