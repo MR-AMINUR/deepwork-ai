@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/meetings")
+@CrossOrigin(origins = "*")
 public class MeetingController {
 
     @Autowired
