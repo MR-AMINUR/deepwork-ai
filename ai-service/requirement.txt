@@ -1,6 +1,7 @@
-FastAPI
-unicorn
-python-multipart
+fastapi
+uvicorn
 openai-whisper
 transformers
 torch
+ffmpeg-python
+python-multipart
