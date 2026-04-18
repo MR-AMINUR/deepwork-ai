@@ -48,13 +48,13 @@ public class MeetingController {
 
         List<Task> tasks = new ArrayList<>();
 
-        for (String taskText : aiResponse.getTasks())
-        {
-            Task task = new Task();
-            task.setTaskText(taskText);
-            task.setSummary(summary);
-
-            tasks.add(task);
+        if (aiResponse.getTasks() != null) {
+            for (String taskText : aiResponse.getTasks()) {
+                Task task = new Task();
+                task.setTaskText(taskText);
+                task.setSummary(summary);
+                task.add(task);
+            }
         }
 
         summary.setTasks(tasks);

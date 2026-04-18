@@ -30,4 +30,7 @@ public class Task {
 
     }
 
+    public void add(Task task) {
+
+    }
 }
