@@ -14,5 +14,5 @@ public class AIResponse {
     private String transcript = " ";
     private String summary = " ";
     private List<String> tasks;
-    private String insights;
+    private List<String> insights;
 }
