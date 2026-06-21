@@ -1,11 +1,7 @@
 # 🚀 DeepWork AI — Meeting Productivity Copilot
 
-## 👨‍💻 Team Members
 
-* Sahaniwaz Ali
-* Md Tarikul Hassan Mallick
-* Farhan Ahammed Molla
-* Aminur Rahaman Mallick (Lead)
+**Aminur Rahaman Mallick**
 
 ---
 
