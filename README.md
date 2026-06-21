@@ -1,7 +1,7 @@
 # 🚀 DeepWork AI — Meeting Productivity Copilot
 
 
-**Aminur Rahaman Mallick**
+***Aminur Rahaman Mallick***
 
 ---
 
