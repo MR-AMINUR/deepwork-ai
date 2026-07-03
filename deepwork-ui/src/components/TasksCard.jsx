@@ -1,5 +1,5 @@
 import React from 'react';
-<parameter name="CheckCircle2, Circle, Sparkles } from 'lucide-react';
+import { CheckCircle2, Circle, Sparkles } from 'lucide-react';
 
 function TasksCard({ tasks, onToggle }) {
   const completedCount = tasks?.filter(t => t.done).length || 0;
