@@ -1,7 +1,12 @@
 import axios from 'axios';
 
-// Get API base URL from environment variables
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8081/api';
+// Get API base URL from environment variables with production fallback
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
+  (import.meta.env.MODE === 'production' 
+    ? 'https://deepwork-ai-backend.onrender.com/api'
+    : 'http://localhost:8081/api');
+
+console.log('🔗 API Base URL:', API_BASE_URL); // Debug log
 
 // Create axios instance with default configuration
 const apiClient = axios.create({
