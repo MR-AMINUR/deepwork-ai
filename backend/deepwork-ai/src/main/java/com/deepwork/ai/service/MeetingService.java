@@ -1,6 +1,7 @@
 package com.deepwork.ai.service;
 
 import com.deepwork.ai.entity.Meeting;
+import com.deepwork.ai.exception.ResourceNotFoundException;
 import com.deepwork.ai.repository.MeetingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,11 +23,14 @@ public class MeetingService {
     }
 
     public Meeting getMeetingById(Long id) {
-        return meetingRepository.findById(id).orElse(null);
+        return meetingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Meeting not found with id: " + id));
     }
 
-    public void deleteMeeting(Long id)
-    {
+    public void deleteMeeting(Long id) {
+        if (!meetingRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Meeting not found with id: " + id);
+        }
         meetingRepository.deleteById(id);
     }
 }

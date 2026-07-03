@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: deepwork-postgres
+    environment:
+      POSTGRES_DB: deepwork_ai
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - deepwork-network
+
+  # AI Service (FastAPI)
+  ai-service:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: deepwork-ai-service
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ai-service/temp:/app/temp
+      - ./ai-service/models:/app/models
+    networks:
+      - deepwork-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Backend (Spring Boot)
+  backend:
+    build:
+      context: ./backend/deepwork-ai
+      dockerfile: Dockerfile
+    container_name: deepwork-backend
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/deepwork_ai
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
+      AI_SERVICE_URL: http://ai-service:8000/analyze
+      ALLOWED_ORIGINS: http://localhost:5173
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+      - ai-service
+    networks:
+      - deepwork-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+
+networks:
+  deepwork-network:
+    driver: bridge

@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-const API_BASE_URL = 'http://localhost:8081/api';
+import { meetingsAPI } from '../config/api';
 
 function Meetings() {
   const [meetings, setMeetings] = useState([]);
   const navigate = useNavigate();
+
   useEffect(() => {
     fetchMeetings();
   }, []);
 
   const fetchMeetings = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/meetings`);
+      const res = await meetingsAPI.getAll();
       setMeetings(res.data);
     } catch (err) {
-      console.error(err);
+      console.error('Error fetching meetings:', err);
     }
   };
 

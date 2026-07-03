@@ -45,7 +45,6 @@ public class MeetingController {
         summary.setMeeting(meeting);
 
         //Step 4: Create Tasks
-
         List<Task> tasks = new ArrayList<>();
 
         if (aiResponse.getTasks() != null) {
@@ -53,7 +52,7 @@ public class MeetingController {
                 Task task = new Task();
                 task.setTaskText(taskText);
                 task.setSummary(summary);
-                task.add(task);
+                tasks.add(task);
             }
         }
 

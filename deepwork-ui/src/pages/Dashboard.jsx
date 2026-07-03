@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { meetingsAPI } from '../config/api';
 import UploadBox from '../components/UploadBox';
 import TranscriptCard from '../components/TranscriptCard';
 import SummaryCard from '../components/SummaryCard';
 import TasksCard from '../components/TasksCard';
 import MeetingsList from '../components/MeetingsList';
 import { useLocation } from 'react-router-dom';
-
-const API_BASE_URL = "https://deepwork-ai-backend.onrender.com/api";
 
 function Dashboard() {
   const [file, setFile] = useState(null);
@@ -37,7 +35,7 @@ function Dashboard() {
 
   const fetchRecentMeetings = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/meetings`);
+      const response = await meetingsAPI.getAll();
       setRecentMeetings(response.data);
     } catch (err) {
       console.error('Error fetching meetings:', err);
@@ -56,12 +54,10 @@ function Dashboard() {
     setError('');
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/meetings/upload`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        onUploadProgress: (e) => {
-          setUploadProgress(Math.round((e.loaded * 100) / e.total));
-        },
+      const response = await meetingsAPI.upload(formData, (e) => {
+        setUploadProgress(Math.round((e.loaded * 100) / e.total));
       });
+      
       setCurrentMeeting(response.data);
       setFile(null);
       setTitle('');

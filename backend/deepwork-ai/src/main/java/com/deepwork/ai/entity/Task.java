@@ -25,12 +25,6 @@ public class Task {
     @JsonBackReference
     private Summary summary;
 
-    public Task()
-    {
-
-    }
-
-    public void add(Task task) {
-
+    public Task() {
     }
 }

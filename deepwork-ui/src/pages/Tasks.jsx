@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-
-const API_BASE_URL = 'http://localhost:8081/api';
+import { tasksAPI } from '../config/api';
 
 function Tasks() {
   const [tasks, setTasks] = useState([]);
@@ -12,10 +10,10 @@ function Tasks() {
 
   const fetchTasks = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/tasks`);
+      const res = await tasksAPI.getAll();
       setTasks(res.data);
     } catch (err) {
-      console.error(err);
+      console.error('Error fetching tasks:', err);
     }
   };
 

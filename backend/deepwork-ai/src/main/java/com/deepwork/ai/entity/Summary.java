@@ -32,9 +32,6 @@ public class Summary {
     @JsonManagedReference
     private List<Task> tasks;
 
-    public Summary()
-    {
-
+    public Summary() {
     }
-
 }

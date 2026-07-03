@@ -24,6 +24,5 @@ public class Meeting {
     private Summary summary;
 
     public Meeting() {
-
     }
 }
