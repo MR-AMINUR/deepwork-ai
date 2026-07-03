@@ -13,6 +13,8 @@ WORKDIR /app
 
 COPY --from=builder /app/target/*.jar app.jar
 
-EXPOSE 8081
+# Expose the port (Render will set this via environment variable)
+EXPOSE ${PORT:-8081}
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Use shell form to allow environment variable substitution
+ENTRYPOINT java -Dserver.port=${PORT:-8081} -jar app.jar
