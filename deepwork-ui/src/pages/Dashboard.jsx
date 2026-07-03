@@ -6,6 +6,7 @@ import SummaryCard from '../components/SummaryCard';
 import TasksCard from '../components/TasksCard';
 import MeetingsList from '../components/MeetingsList';
 import { useLocation } from 'react-router-dom';
+import { Sparkles } from 'lucide-react';
 
 function Dashboard() {
   const [file, setFile] = useState(null);
@@ -74,41 +75,75 @@ function Dashboard() {
     setTasks(prev => prev.map((t, i) => i === index ? { ...t, done: !t.done } : t));
   };
 
-  const emptyCards = ['Meeting Transcript', 'AI-Generated Summary', 'Action Items'];
+  const emptyCards = [
+    { label: 'Meeting Transcript', icon: '📝', gradient: 'from-blue-500 to-cyan-500' },
+    { label: 'AI-Generated Summary', icon: '✨', gradient: 'from-purple-500 to-pink-500' },
+    { label: 'Action Items', icon: '✅', gradient: 'from-green-500 to-emerald-500' }
+  ];
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-8 space-y-8">
-      <UploadBox
-        file={file}
-        setFile={setFile}
-        title={title}
-        setTitle={setTitle}
-        uploading={uploading}
-        uploadProgress={uploadProgress}
-        error={error}
-        onUpload={handleUpload}
-      />
+    <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+      {/* Hero Section */}
+      <div className="text-center space-y-3 fade-in">
+        <div className="flex items-center justify-center gap-2">
+          <Sparkles className="w-8 h-8 text-blue-600 animate-pulse" />
+          <h1 className="text-4xl font-bold gradient-text">DeepWork AI Assistant</h1>
+        </div>
+        <p className="text-gray-600 max-w-2xl mx-auto">
+          Transform your meetings into actionable insights with AI-powered transcription, 
+          summarization, and task extraction
+        </p>
+      </div>
 
+      {/* Upload Section */}
+      <div className="slide-up">
+        <UploadBox
+          file={file}
+          setFile={setFile}
+          title={title}
+          setTitle={setTitle}
+          uploading={uploading}
+          uploadProgress={uploadProgress}
+          error={error}
+          onUpload={handleUpload}
+        />
+      </div>
+
+      {/* Results Section */}
       {currentMeeting ? (
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 slide-up">
           <TranscriptCard transcript={currentMeeting.transcript} />
           <SummaryCard summaryText={currentMeeting.summary?.summaryText} />
           <TasksCard tasks={tasks} onToggle={toggleTask} />
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-6">
-          {emptyCards.map((label, i) => (
-            <div key={i} className="bg-white rounded-xl border border-gray-200 p-5">
-              <h2 className={`font-semibold mb-4 ${i === 1 ? 'text-blue-600' : 'text-gray-800'}`}>{label}</h2>
-              <div className={`rounded-lg p-4 min-h-36 ${i === 1 ? 'bg-blue-50' : 'bg-gray-50'}`}>
-                <p className="text-sm text-gray-400 italic">Upload a meeting to see results here.</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {emptyCards.map((card, i) => (
+            <div
+              key={i}
+              className="glass rounded-xl border border-gray-200/50 p-6 card-lift"
+              style={{ animationDelay: `${i * 0.1}s` }}
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${card.gradient} flex items-center justify-center text-white text-xl`}>
+                  {card.icon}
+                </div>
+                <h2 className="font-semibold text-gray-800">{card.label}</h2>
+              </div>
+              <div className="ai-shimmer rounded-lg p-6 min-h-36 flex items-center justify-center">
+                <p className="text-sm text-gray-500 italic text-center">
+                  Upload a meeting to see AI-generated {card.label.toLowerCase()} here
+                </p>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      <MeetingsList meetings={recentMeetings} onSelect={setCurrentMeeting} />
+      {/* Recent Meetings */}
+      <div className="fade-in" style={{ animationDelay: '0.4s' }}>
+        <MeetingsList meetings={recentMeetings} onSelect={setCurrentMeeting} />
+      </div>
     </div>
   );
 }
